@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/workshop
+    username: myuser
+    password: mypassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # Crea y actualiza las tablas automáticamente para el workshop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+# Resilience4j Circuit Breaker configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      shippingService:
+        slidingWindowSize: 5               # Evalúa las últimas 5 llamadas
+        failureRateThreshold: 50           # Si el 50% fallan, se abre el circuito
+        waitDurationInOpenState: 10s       # Tiempo en estado abierto antes de probar de nuevo (Medio Abierto)
+        permittedNumberOfCallsInHalfOpenState: 2 # Permite 2 llamadas para ver si el servicio se recuperó
+        minimumNumberOfCalls: 3            # Mínimo de llamadas antes de calcular el porcentaje de fallo
+
+logging:
+  level:
+    com.workshop.patterns: INFO
